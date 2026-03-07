@@ -1,0 +1,184 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  passwordHash  String?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts Account[]
+  sessions Session[]
+  projects Project[]
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  genre       String?
+  aspectRatio String   @default("16:9")
+  style       String   @default("cinematic")
+  thumbnail   String?
+  userId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  scenes       Scene[]
+  characters   Character[]
+  environments Environment[]
+}
+
+model Character {
+  id              String   @id @default(cuid())
+  name            String
+  description     String?
+  referenceImages String   @default("[]") // JSON array of image paths
+  styleNotes      String?
+  costumeNotes    String?
+  ageGender       String?
+  personalityNotes String?
+  projectId       String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  shotCharacters ShotCharacter[]
+}
+
+model Environment {
+  id              String   @id @default(cuid())
+  name            String
+  description     String?
+  referenceImages String   @default("[]") // JSON array of image paths
+  lightingNotes   String?
+  moodNotes       String?
+  recurringProps  String?
+  locationStyle   String?
+  projectId       String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  scenes  Scene[]
+  shots   Shot[]
+}
+
+model Scene {
+  id            String   @id @default(cuid())
+  sceneNumber   Int
+  title         String
+  summary       String?
+  emotionalTone String?
+  timeOfDay     String?
+  projectId     String
+  environmentId String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  project     Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  environment Environment? @relation(fields: [environmentId], references: [id])
+  shots       Shot[]
+}
+
+model Shot {
+  id                  String   @id @default(cuid())
+  shotNumber          Int
+  title               String?
+  shotType            String   @default("medium")
+  actionDescription   String?
+  cameraDirection     String?
+  dialogueDirection   String?
+  vfxNotes            String?
+  audioNotes          String?
+  continuityNotes     String?
+  sketchImage              String?  // path to sketch
+  poseReferenceImage       String?  // path to pose reference image
+  poseReferenceCharacterId  String?  // which character this pose applies to
+  uploadedReferences       String   @default("[]") // JSON array of image paths
+  generatedImages     String   @default("[]") // JSON array of generated image paths
+  selectedVersion     Int      @default(0)
+  shotDuration        String?
+  emotionalTone       String?
+  compositionNotes    String?
+  status              String   @default("draft") // draft, generated, approved
+  sceneId             String
+  environmentId       String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  scene       Scene        @relation(fields: [sceneId], references: [id], onDelete: Cascade)
+  environment Environment? @relation(fields: [environmentId], references: [id])
+  characters  ShotCharacter[]
+  generations Generation[]
+}
+
+model ShotCharacter {
+  id                 String  @id @default(cuid())
+  shotId             String
+  characterId        String
+  poseNotes          String?
+  actionNotes        String?
+  poseReferenceImage String?  // pose reference image for this character in this shot
+
+  shot      Shot      @relation(fields: [shotId], references: [id], onDelete: Cascade)
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  @@unique([shotId, characterId])
+}
+
+model Generation {
+  id             String   @id @default(cuid())
+  shotId         String
+  promptUsed     String
+  modelUsed      String
+  imagePath      String
+  thumbnailPath  String?
+  settings       String   @default("{}") // JSON
+  status         String   @default("completed") // pending, completed, failed
+  createdAt      DateTime @default(now())
+
+  shot Shot @relation(fields: [shotId], references: [id], onDelete: Cascade)
+}
