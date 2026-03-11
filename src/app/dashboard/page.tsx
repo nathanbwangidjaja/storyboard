@@ -6,10 +6,6 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { ASPECT_RATIOS, STYLES } from "@/types";
 import type { ProjectWithCounts } from "@/types";
 
-// ---------------------------------------------------------------------------
-// New Project Modal
-// ---------------------------------------------------------------------------
-
 function NewProjectModal({ onClose, onCreated }: { onClose: () => void; onCreated: (id: string) => void }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
@@ -26,6 +26,7 @@ interface Shot {
 
 export default function TimelinePage() {
   const params = useParams();
+  const router = useRouter();
   const projectId = params.id as string;
   const [shots, setShots] = useState<Shot[]>([]);
   const [loading, setLoading] = useState(true);
@@ -164,6 +165,7 @@ export default function TimelinePage() {
                       }`}
                       onClick={() => {
                         if (compareMode) toggleCompare(shot.id);
+                        else router.push(`/project/${projectId}/workspace?shot=${shot.id}&scene=${shot.scene.id}`);
                       }}
                     >
                       <div className="aspect-video bg-surface-100 relative">
@@ -226,6 +228,7 @@ export default function TimelinePage() {
                         }`}
                         onClick={() => {
                           if (compareMode) toggleCompare(shot.id);
+                          else router.push(`/project/${projectId}/workspace?shot=${shot.id}&scene=${shot.scene.id}`);
                         }}
                       >
                         <div className="aspect-video bg-surface-100 relative">

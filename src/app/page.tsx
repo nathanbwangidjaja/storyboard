@@ -1,16 +1,10 @@
 import Link from "next/link";
 
-/* ------------------------------------------------------------------ */
-/*  Storyboard AI – Landing Page (Server Component)                   */
-/* ------------------------------------------------------------------ */
-
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-surface-0 text-surface-900">
-      {/* ── Navbar ─────────────────────────────────────────────── */}
       <nav className="fixed top-0 z-50 w-full border-b border-surface-200 bg-surface-0/80 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-          {/* Logo */}
           <Link href="/" className="flex items-center gap-2 text-lg font-bold tracking-tight text-brand-700">
             <svg width="28" height="28" viewBox="0 0 28 28" fill="none" className="shrink-0">
               <rect x="2" y="2" width="24" height="24" rx="6" className="fill-brand-600" />
@@ -22,7 +16,6 @@ export default function LandingPage() {
             Storyboard AI
           </Link>
 
-          {/* CTA */}
           <div className="flex items-center gap-3">
             <Link
               href="/auth/login"
@@ -40,9 +33,7 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* ── Hero ───────────────────────────────────────────────── */}
       <section className="relative isolate overflow-hidden pt-16">
-        {/* Background decoration */}
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
           <div className="absolute -top-40 right-1/4 h-[600px] w-[600px] rounded-full bg-brand-100 opacity-40 blur-3xl" />
           <div className="absolute -bottom-20 left-1/4 h-[500px] w-[500px] rounded-full bg-brand-50 opacity-50 blur-3xl" />
@@ -87,10 +78,8 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          {/* Hero mockup -- faux browser window with storyboard frames */}
           <div className="relative mx-auto mt-20 w-full max-w-5xl">
             <div className="rounded-2xl border border-surface-200 bg-surface-0 shadow-2xl shadow-surface-900/5">
-              {/* Browser chrome */}
               <div className="flex items-center gap-2 border-b border-surface-200 px-4 py-3">
                 <span className="h-3 w-3 rounded-full bg-surface-300" />
                 <span className="h-3 w-3 rounded-full bg-surface-300" />
@@ -98,7 +87,6 @@ export default function LandingPage() {
                 <span className="mx-auto h-6 w-64 rounded-md bg-surface-100" />
               </div>
 
-              {/* Storyboard frames grid */}
               <div className="grid grid-cols-2 gap-4 p-6 sm:grid-cols-4">
                 {[
                   { label: "Scene 1", accent: "bg-brand-100", icon: "M4 4h8v8H4z" },
@@ -120,7 +108,6 @@ export default function LandingPage() {
               </div>
             </div>
 
-            {/* Floating badge */}
             <div className="absolute -right-3 -bottom-3 rounded-xl border border-surface-200 bg-surface-0 px-4 py-2.5 shadow-lg sm:-right-6 sm:-bottom-6">
               <p className="text-xs font-semibold text-brand-600">4 frames generated</p>
               <p className="text-[11px] text-surface-500">in 12 seconds</p>
@@ -129,7 +116,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── Workflow / How It Works ─────────────────────────────── */}
+      {/* How it works */}
       <section className="border-t border-surface-200 bg-surface-50 py-28">
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center">
@@ -144,7 +131,6 @@ export default function LandingPage() {
           </div>
 
           <div className="relative mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {/* Connector line (desktop only) */}
             <div
               aria-hidden="true"
               className="pointer-events-none absolute top-12 right-0 left-0 hidden h-0.5 bg-gradient-to-r from-surface-200 via-brand-200 to-surface-200 lg:block"
@@ -193,7 +179,7 @@ export default function LandingPage() {
                   step: "04",
                   title: "Refine Sequence",
                   description:
-                    "Reorder, regenerate, or tweak individual frames until every shot is perfect.",
+                    "Review, regenerate, or tweak individual frames until every shot is perfect.",
                   icon: (
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M12 20V10" />
@@ -205,7 +191,6 @@ export default function LandingPage() {
               ] as const
             ).map((item) => (
               <div key={item.step} className="relative flex flex-col items-center text-center">
-                {/* Step circle */}
                 <div className="relative z-10 flex h-24 w-24 flex-col items-center justify-center rounded-2xl border border-surface-200 bg-surface-0 shadow-sm transition hover:border-brand-300 hover:shadow-md">
                   <div className="text-brand-600">{item.icon}</div>
                 </div>
@@ -222,7 +207,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── Features ───────────────────────────────────────────── */}
+      {/* Features */}
       <section className="py-28">
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center">
@@ -265,7 +250,7 @@ export default function LandingPage() {
                 {
                   title: "Multi-Scene Support",
                   description:
-                    "Organize dozens of scenes into acts and sequences. Drag and drop to reorder your narrative.",
+                    "Organize dozens of scenes and shots into sequences with a clear visual timeline.",
                   icon: (
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                       <rect x="2" y="3" width="20" height="14" rx="2" />
@@ -304,7 +289,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── Sample Storyboard Mockup ───────────────────────────── */}
+      {/* Sample sequence */}
       <section className="border-t border-surface-200 bg-surface-50 py-28">
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center">
@@ -419,16 +404,13 @@ export default function LandingPage() {
                 <div
                   className={`relative overflow-hidden rounded-xl border border-surface-200 bg-gradient-to-br ${item.bg} transition hover:border-brand-300 hover:shadow-lg`}
                 >
-                  {/* Frame number badge */}
                   <span className="absolute top-3 left-3 z-10 rounded-md bg-surface-900/70 px-2 py-0.5 text-[11px] font-bold text-white backdrop-blur-sm">
                     {String(item.frame).padStart(2, "0")}
                   </span>
-                  {/* Shot type badge */}
                   <span className="absolute top-3 right-3 z-10 rounded-md bg-brand-600/80 px-2 py-0.5 text-[11px] font-semibold text-white backdrop-blur-sm">
                     {item.shot}
                   </span>
 
-                  {/* Placeholder illustration */}
                   <div className="flex aspect-video items-center justify-center">
                     <svg viewBox="0 0 120 80" className="h-full w-full p-4 opacity-80">
                       {item.shapes}
@@ -444,11 +426,10 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── CTA Banner ─────────────────────────────────────────── */}
+      {/* CTA */}
       <section className="py-28">
         <div className="mx-auto max-w-4xl px-6 text-center">
           <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-700 to-brand-900 px-8 py-16 shadow-2xl shadow-brand-900/20 sm:px-16">
-            {/* Background glow */}
             <div aria-hidden="true" className="pointer-events-none absolute inset-0">
               <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-brand-500 opacity-20 blur-3xl" />
               <div className="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-brand-400 opacity-15 blur-3xl" />
@@ -482,11 +463,9 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── Footer ─────────────────────────────────────────────── */}
       <footer className="border-t border-surface-200 bg-surface-50">
         <div className="mx-auto max-w-7xl px-6 py-12">
           <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
-            {/* Logo */}
             <Link href="/" className="flex items-center gap-2 text-sm font-bold tracking-tight text-surface-700">
               <svg width="22" height="22" viewBox="0 0 28 28" fill="none" className="shrink-0">
                 <rect x="2" y="2" width="24" height="24" rx="6" className="fill-brand-600" />

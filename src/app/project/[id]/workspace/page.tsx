@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
@@ -80,6 +80,7 @@ interface Project {
 export default function WorkspacePage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { data: session } = useSession();
   const projectId = params.id as string;
 
@@ -92,6 +93,7 @@ export default function WorkspacePage() {
   const [sketchDataUrl, setSketchDataUrl] = useState<string | null>(null);
   const [showAddScene, setShowAddScene] = useState(false);
   const [newSceneTitle, setNewSceneTitle] = useState("");
+  const [dismissedGuide, setDismissedGuide] = useState(false);
 
   const activeScene = project?.scenes.find((s) => s.id === activeSceneId);
   const activeShot = activeScene?.shots.find((s) => s.id === activeShotId);
@@ -104,9 +106,16 @@ export default function WorkspacePage() {
       setProject(data);
 
       if (!activeSceneId && data.scenes.length > 0) {
-        setActiveSceneId(data.scenes[0].id);
-        if (data.scenes[0].shots.length > 0) {
-          setActiveShotId(data.scenes[0].shots[0].id);
+        const qScene = searchParams.get("scene");
+        const qShot = searchParams.get("shot");
+        if (qScene && qShot && data.scenes.some((s: Scene) => s.id === qScene)) {
+          setActiveSceneId(qScene);
+          setActiveShotId(qShot);
+        } else {
+          setActiveSceneId(data.scenes[0].id);
+          if (data.scenes[0].shots.length > 0) {
+            setActiveShotId(data.scenes[0].shots[0].id);
+          }
         }
       }
     } catch {
@@ -330,6 +339,36 @@ export default function WorkspacePage() {
         </div>
       </header>
 
+      {/* Getting Started Guide */}
+      {!dismissedGuide && project.characters.length === 0 && project.scenes.every(s => s.shots.every(sh => JSON.parse(sh.generatedImages || "[]").length === 0)) && (
+        <div className="bg-brand-50 border-b border-brand-200 px-4 py-2.5 flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-4 text-sm">
+            <span className="font-medium text-brand-800">Getting started:</span>
+            <div className="flex items-center gap-3 text-brand-700">
+              <Link href={`/project/${projectId}/characters`} className="flex items-center gap-1 hover:underline">
+                <span className="w-5 h-5 rounded-full bg-brand-200 text-brand-700 text-xs font-bold flex items-center justify-center">1</span>
+                Add characters
+              </Link>
+              <span className="text-brand-300">&rarr;</span>
+              <Link href={`/project/${projectId}/environments`} className="flex items-center gap-1 hover:underline">
+                <span className="w-5 h-5 rounded-full bg-brand-200 text-brand-700 text-xs font-bold flex items-center justify-center">2</span>
+                Add environments
+              </Link>
+              <span className="text-brand-300">&rarr;</span>
+              <span className="flex items-center gap-1">
+                <span className="w-5 h-5 rounded-full bg-brand-200 text-brand-700 text-xs font-bold flex items-center justify-center">3</span>
+                Describe shot &amp; generate
+              </span>
+            </div>
+          </div>
+          <button onClick={() => setDismissedGuide(true)} className="text-brand-400 hover:text-brand-600 p-1">
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      )}
+
       {/* Three-column layout */}
       <div className="flex-1 flex overflow-hidden">
         {/* Left Sidebar - Scenes & Shots */}
@@ -382,6 +421,32 @@ export default function WorkspacePage() {
                       Upload Ref
                     </span>
                   </label>
+                  {activeShot.status === "generated" && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => updateShot(activeShotId!, { status: "approved" } as Partial<Shot>)}
+                      className="text-green-600 hover:bg-green-50"
+                    >
+                      <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      Approve
+                    </Button>
+                  )}
+                  {activeShot.status === "approved" && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => updateShot(activeShotId!, { status: "generated" } as Partial<Shot>)}
+                      className="text-brand-600 hover:bg-brand-50"
+                    >
+                      <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      Approved
+                    </Button>
+                  )}
                   <Button
                     variant="primary"
                     size="sm"
@@ -451,6 +516,7 @@ export default function WorkspacePage() {
                         images={JSON.parse(activeShot.generatedImages || "[]")}
                         selectedVersion={activeShot.selectedVersion}
                         onSelectVersion={(v) => updateShot(activeShotId!, { selectedVersion: v } as Partial<Shot>)}
+                        generating={generating}
                       />
                     </div>
                   </div>

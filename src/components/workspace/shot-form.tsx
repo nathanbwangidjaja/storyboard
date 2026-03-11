@@ -71,6 +71,11 @@ export function ShotForm({ shot, characters, environments, onUpdate, onUploadPos
     shot.characters?.map((c) => c.characterId) || []
   );
   const [characterPoses, setCharacterPoses] = useState<Record<string, { poseNotes: string; actionNotes: string }>>({});
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
+
+  const toggleSection = (key: string) => {
+    setExpandedSections((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
 
   useEffect(() => {
     setForm({
@@ -365,72 +370,109 @@ export function ShotForm({ shot, characters, environments, onUpdate, onUploadPos
 
       {/* Camera Direction */}
       <div className="p-3 space-y-3">
-        <h3 className="text-xs font-semibold text-surface-500 uppercase tracking-wider">Camera</h3>
-        <textarea
-          value={form.cameraDirection}
-          onChange={(e) => handleChange("cameraDirection", e.target.value)}
-          rows={2}
-          className="w-full px-2.5 py-1.5 text-sm border border-surface-200 rounded-md focus:ring-1 focus:ring-brand-500 resize-none"
-          placeholder="Camera angle, framing, movement..."
-        />
-        <div>
-          <label className="block text-xs font-medium text-surface-600 mb-1">Composition</label>
-          <input
-            type="text"
-            value={form.compositionNotes}
-            onChange={(e) => handleChange("compositionNotes", e.target.value)}
-            className="w-full px-2.5 py-1.5 text-sm border border-surface-200 rounded-md focus:ring-1 focus:ring-brand-500"
-            placeholder="Rule of thirds, leading lines..."
-          />
-        </div>
+        <button onClick={() => toggleSection("camera")} className="flex items-center justify-between w-full">
+          <h3 className="text-xs font-semibold text-surface-500 uppercase tracking-wider">Camera</h3>
+          <svg className={`w-3.5 h-3.5 text-surface-400 transition-transform ${expandedSections.camera ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        {(expandedSections.camera || form.cameraDirection || form.compositionNotes) && (
+          <div className="space-y-3">
+            <textarea
+              value={form.cameraDirection}
+              onChange={(e) => handleChange("cameraDirection", e.target.value)}
+              rows={2}
+              className="w-full px-2.5 py-1.5 text-sm border border-surface-200 rounded-md focus:ring-1 focus:ring-brand-500 resize-none"
+              placeholder="Camera angle, framing, movement..."
+            />
+            <div>
+              <label className="block text-xs font-medium text-surface-600 mb-1">Composition</label>
+              <input
+                type="text"
+                value={form.compositionNotes}
+                onChange={(e) => handleChange("compositionNotes", e.target.value)}
+                className="w-full px-2.5 py-1.5 text-sm border border-surface-200 rounded-md focus:ring-1 focus:ring-brand-500"
+                placeholder="Rule of thirds, leading lines..."
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Dialogue */}
       <div className="p-3 space-y-3">
-        <h3 className="text-xs font-semibold text-surface-500 uppercase tracking-wider">Dialogue</h3>
-        <textarea
-          value={form.dialogueDirection}
-          onChange={(e) => handleChange("dialogueDirection", e.target.value)}
-          rows={2}
-          className="w-full px-2.5 py-1.5 text-sm border border-surface-200 rounded-md focus:ring-1 focus:ring-brand-500 resize-none"
-          placeholder="Who speaks, line summary, emotion..."
-        />
+        <button onClick={() => toggleSection("dialogue")} className="flex items-center justify-between w-full">
+          <h3 className="text-xs font-semibold text-surface-500 uppercase tracking-wider">Dialogue</h3>
+          <svg className={`w-3.5 h-3.5 text-surface-400 transition-transform ${expandedSections.dialogue ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        {(expandedSections.dialogue || form.dialogueDirection) && (
+          <textarea
+            value={form.dialogueDirection}
+            onChange={(e) => handleChange("dialogueDirection", e.target.value)}
+            rows={2}
+            className="w-full px-2.5 py-1.5 text-sm border border-surface-200 rounded-md focus:ring-1 focus:ring-brand-500 resize-none"
+            placeholder="Who speaks, line summary, emotion..."
+          />
+        )}
       </div>
 
       {/* VFX */}
       <div className="p-3 space-y-3">
-        <h3 className="text-xs font-semibold text-surface-500 uppercase tracking-wider">VFX</h3>
-        <textarea
-          value={form.vfxNotes}
-          onChange={(e) => handleChange("vfxNotes", e.target.value)}
-          rows={2}
-          className="w-full px-2.5 py-1.5 text-sm border border-surface-200 rounded-md focus:ring-1 focus:ring-brand-500 resize-none"
-          placeholder="Smoke, sparks, magic effects..."
-        />
+        <button onClick={() => toggleSection("vfx")} className="flex items-center justify-between w-full">
+          <h3 className="text-xs font-semibold text-surface-500 uppercase tracking-wider">VFX</h3>
+          <svg className={`w-3.5 h-3.5 text-surface-400 transition-transform ${expandedSections.vfx ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        {(expandedSections.vfx || form.vfxNotes) && (
+          <textarea
+            value={form.vfxNotes}
+            onChange={(e) => handleChange("vfxNotes", e.target.value)}
+            rows={2}
+            className="w-full px-2.5 py-1.5 text-sm border border-surface-200 rounded-md focus:ring-1 focus:ring-brand-500 resize-none"
+            placeholder="Smoke, sparks, magic effects..."
+          />
+        )}
       </div>
 
       {/* Audio */}
       <div className="p-3 space-y-3">
-        <h3 className="text-xs font-semibold text-surface-500 uppercase tracking-wider">Audio</h3>
-        <textarea
-          value={form.audioNotes}
-          onChange={(e) => handleChange("audioNotes", e.target.value)}
-          rows={2}
-          className="w-full px-2.5 py-1.5 text-sm border border-surface-200 rounded-md focus:ring-1 focus:ring-brand-500 resize-none"
-          placeholder="Ambient sound, music cue, SFX..."
-        />
+        <button onClick={() => toggleSection("audio")} className="flex items-center justify-between w-full">
+          <h3 className="text-xs font-semibold text-surface-500 uppercase tracking-wider">Audio</h3>
+          <svg className={`w-3.5 h-3.5 text-surface-400 transition-transform ${expandedSections.audio ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        {(expandedSections.audio || form.audioNotes) && (
+          <textarea
+            value={form.audioNotes}
+            onChange={(e) => handleChange("audioNotes", e.target.value)}
+            rows={2}
+            className="w-full px-2.5 py-1.5 text-sm border border-surface-200 rounded-md focus:ring-1 focus:ring-brand-500 resize-none"
+            placeholder="Ambient sound, music cue, SFX..."
+          />
+        )}
       </div>
 
       {/* Continuity */}
       <div className="p-3 space-y-3">
-        <h3 className="text-xs font-semibold text-surface-500 uppercase tracking-wider">Continuity</h3>
-        <textarea
-          value={form.continuityNotes}
-          onChange={(e) => handleChange("continuityNotes", e.target.value)}
-          rows={2}
-          className="w-full px-2.5 py-1.5 text-sm border border-surface-200 rounded-md focus:ring-1 focus:ring-brand-500 resize-none"
-          placeholder="Match previous shot, preserve wardrobe..."
-        />
+        <button onClick={() => toggleSection("continuity")} className="flex items-center justify-between w-full">
+          <h3 className="text-xs font-semibold text-surface-500 uppercase tracking-wider">Continuity</h3>
+          <svg className={`w-3.5 h-3.5 text-surface-400 transition-transform ${expandedSections.continuity ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        {(expandedSections.continuity || form.continuityNotes) && (
+          <textarea
+            value={form.continuityNotes}
+            onChange={(e) => handleChange("continuityNotes", e.target.value)}
+            rows={2}
+            className="w-full px-2.5 py-1.5 text-sm border border-surface-200 rounded-md focus:ring-1 focus:ring-brand-500 resize-none"
+            placeholder="Match previous shot, preserve wardrobe..."
+          />
+        )}
       </div>
     </div>
   );

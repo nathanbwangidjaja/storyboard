@@ -1,12 +1,51 @@
 "use client";
 
+import { useState, useEffect } from "react";
+
 interface GeneratedPreviewProps {
   images: string[];
   selectedVersion: number;
   onSelectVersion: (v: number) => void;
+  generating?: boolean;
 }
 
-export function GeneratedPreview({ images, selectedVersion, onSelectVersion }: GeneratedPreviewProps) {
+export function GeneratedPreview({ images, selectedVersion, onSelectVersion, generating }: GeneratedPreviewProps) {
+  const [elapsed, setElapsed] = useState(0);
+
+  useEffect(() => {
+    if (!generating) {
+      setElapsed(0);
+      return;
+    }
+    setElapsed(0);
+    const interval = setInterval(() => setElapsed((e) => e + 1), 1000);
+    return () => clearInterval(interval);
+  }, [generating]);
+
+  if (generating) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <div className="text-center">
+          <div className="relative w-16 h-16 mx-auto mb-4">
+            <div className="absolute inset-0 rounded-full border-4 border-surface-200" />
+            <div className="absolute inset-0 rounded-full border-4 border-brand-500 border-t-transparent animate-spin" />
+          </div>
+          <p className="text-sm font-medium text-surface-700">Generating frame...</p>
+          <p className="text-xs text-surface-400 mt-1">{elapsed}s elapsed</p>
+          <div className="mt-3 flex justify-center gap-1">
+            {[0, 1, 2].map((i) => (
+              <div
+                key={i}
+                className="w-1.5 h-1.5 rounded-full bg-brand-400 animate-bounce"
+                style={{ animationDelay: `${i * 0.15}s` }}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (images.length === 0) {
     return (
       <div className="h-full flex items-center justify-center text-surface-400">

@@ -35,7 +35,7 @@ function buildPrompt(input: GenerateStoryboardInput): string {
     parts.push(``);
     parts.push(`CRITICAL - REPLICATE FROM REFERENCE (highest priority):`);
     parts.push(`- Match the EXACT art style: line weight, shading, color palette, overall aesthetic.`);
-    parts.push(`- Match ALL set/props: car interior (ONE steering wheel on driver side only), dashboard, seats, window frame — do NOT add new elements like a second steering wheel.`);
+    parts.push(`- Match ALL set/props, interiors, and scene elements from the reference — do not invent new props or duplicate layout elements.`);
     parts.push(`- Match character designs identically: faces, proportions, outfits, colors.`);
     parts.push(`- The reference defines everything visual. Your output should look like the SAME artist drew the next moment — only pose, camera angle, or action may change.`);
     parts.push(``);
@@ -103,7 +103,7 @@ function buildPrompt(input: GenerateStoryboardInput): string {
   }
 
   if (hasRef) {
-    parts.push(`\nRemember: Preserve the reference's car design (single steering wheel), characters, and style. No new props or layout changes.`);
+    parts.push(`\nPreserve the reference's set design, characters, and style. No new props or layout changes.`);
   }
 
   parts.push(`\nPlease create one clean storyboard illustration. No text, no borders, no labels — just the artwork.`);
@@ -129,7 +129,7 @@ export async function generateStoryboardImage(
       const ext = path.extname(fullPath).toLowerCase();
       const mimeType = ext === ".png" ? "image/png" : "image/jpeg";
       parts.push({
-        text: "PRIORITY REFERENCE — This is the previous storyboard frame. Replicate its exact car interior (one steering wheel), character designs, and art style in your output:",
+        text: "PREVIOUS FRAME — Replicate its set, character designs, and art style in your output:",
       });
       parts.push({
         inlineData: {
